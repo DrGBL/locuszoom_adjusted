@@ -5,9 +5,14 @@ Original locuszoom code can be obtained from this repository: https://github.com
 
 *** Instructions ***
 
-Use the following code to build the new locuszoom reference, as was done for the plots in https://www.medrxiv.org/content/10.1101/2023.06.26.23291885v1
+Use the following code to build the new locuszoom reference, as was done for the plots in https://www.medrxiv.org/content/10.1101/2023.06.26.23291885v1 .
 
-. In this case I use hg38. Once that's done you can use the locuszoom function in the bin folder.
+In this case I use hg38. Once that's done you can use the locuszoom function in the bin folder.
+
+```my_snp_pos_file.txt``` is a tsv file with the following header: ```snp     chr     pos```, where snp is the variant ID.
+```refsnp_trans.txt``` is a tsv file with the following header: ```rs_orig rs_current```, where both columns are the same variant ID.
+
+All other files are created to downloaded using the code below.
 
 ```
 cd /path/to/your/directory/
