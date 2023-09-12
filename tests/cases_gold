@@ -1,0 +1,59 @@
+gold1 = Test("--prefix gold1 --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --refsnp rs1531343 --flank 500kb --delim space --plotonly");
+gold1.title = "HMGA2 Region"
+gold1.gold_std("tests/standards/100118_rs1531343.pdf");
+tests.append(gold1);
+
+gold2 = Test("--prefix gold2 --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --refgene ZFAND6 --flank 200kb --delim space --plotonly");
+gold2.title = "ZFAND6 Region"
+gold2.gold_std("tests/standards/100118_ZFAND6.pdf");
+tests.append(gold2);
+
+gold3 = Test("--prefix gold3 --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --refgene ZFAND6 --flank 200kb --delim space --plotonly --prefix no_annot showAnnot=F");
+gold3.title = "ZFAND6 Region, without SNP annotations"
+gold3.gold_std("tests/standards/no_annot_100118_ZFAND6.pdf");
+tests.append(gold3);
+
+gold4 = Test("--prefix gold4 --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --refsnp rs231362 --chr 11 --start 2348047 --end 2922200 --delim space --plotonly");
+gold4.title = "KCNQ1 Region";
+gold4.gold_std("tests/standards/100118_rs231362.pdf");
+tests.append(gold4);
+
+gold5 = Test("--prefix gold5 --metal tests/data/HDL_ONE_Eur_b36_normcols.tbl --refsnp rs3764261 --flank 100kb --plotonly");
+gold5.title = "CETP Super Region!!"
+gold5.gold_std("tests/standards/100118_rs3764261.pdf");
+tests.append(gold5);
+
+gold6 = Test("--prefix gold6 --metal tests/data/HDL_ONE_Eur_b36_normcols.tbl --refsnp rs174546 --flank 150kb --plotonly");
+gold6.title = "FADS1 Region";
+gold6.gold_std("tests/standards/100118_rs174546.pdf");
+tests.append(gold6);
+
+gold7 = Test("--prefix gold7 --metal tests/data/HDL_ONE_Eur_b36_normcols.tbl --refsnp rs4846914 --flank 600kb --plotonly");
+gold7.title = "GALNT2 Region"
+gold7.gold_std("tests/standards/100118_rs4846914.pdf");
+tests.append(gold7);
+
+gold8 = Test("--prefix gold8 --metal tests/data/HDL_ONE_Eur_b36_normcols.tbl --refsnp rs4846914 --flank 600kb --plotonly --prefix no_annot showAnnot=F");
+gold8.title = "GALNT2 Region, no SNP annotations";
+gold8.gold_std("tests/standards/no_annot_100118_rs4846914.pdf");
+tests.append(gold8);
+
+gold9 = Test("--metal tests/data/HDL_ONE_Eur_b36.tbl --prefix gold9 --metal tests/data/HDL_ONE_Eur_b36.tbl --refgene TCF7L2 --markercol SNPColumn --pvalcol GC.Pvalue --flank 60kb showAnnot=FALSE smallDot=0.8 largeDot=2.0 weightCol=Weight weightRange=90000,100000");
+gold9.title = "TCF7L2 Region, dot sizes by weight";
+gold9.gold_std("tests/standards/chr10_114639998-114977426.pdf");
+tests.append(gold9);
+
+gold10 = Test(
+  "--prefix t2dgp1_1000g_mar2012_EUR_hg19_TCF7L2 --delim whitespace --markercol SNP --pvalcol P --metal tests/data/t2dgenes_p1/locuszoom.TCF7L2.out --refgene TCF7L2 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop EUR --build hg19 showAnnot=F"
+);
+gold10.title = "T2DG-P1 1000G_March2012 / EUR / hg19 / TCF7L2";
+gold10.gold_std("tests/standards/t2dgp1_1000g_mar2012_EUR_hg19_TCF7L2_130124_TCF7L2.pdf");
+tests.append(gold10);
+
+gold11 = Test(
+  "--prefix t2dgp1_1000g_mar2012_EUR_hg19_CDKAL1 --delim whitespace --markercol SNP --pvalcol P --metal tests/data/t2dgenes_p1/locuszoom.CDKAL1.out --refgene CDKAL1 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop EUR --build hg19 showAnnot=F"
+);
+gold11.title = "T2DG-P1 1000G_March2012 / EUR / hg19 / CDKAL1";
+gold11.gold_std("tests/standards/t2dgp1_1000g_mar2012_EUR_hg19_CDKAL1_130124_CDKAL1.pdf");
+tests.append(gold11);
+

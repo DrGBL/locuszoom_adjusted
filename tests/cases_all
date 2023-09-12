@@ -1,0 +1,711 @@
+### 
+# TESTS THAT SHOULD FAIL:
+###
+
+# Test when header is missing entirely from file. 
+header_test = Test("--metal tests/data/no_header_rs1531343.txt --refsnp rs1531343 --delim space --build hg18 --pop CEU --source hapmap");
+header_test.title = "Metal file missing header test";
+header_test.add_required_file("tests/data/no_header_rs1531343.txt");
+header_test.should_fail = True;
+tests.append(header_test);
+
+# Test when refsnp is missing from file. 
+noref_test = Test("--metal tests/data/missing_refsnp_rs1531343.txt --refsnp rs1531343 --delim space --build hg18 --pop CEU --source hapmap");
+noref_test.title = "Refsnp missing from metal file";
+noref_test.add_required_file("tests/data/missing_refsnp_rs1531343.txt");
+noref_test.should_fail = True;
+tests.append(noref_test);
+
+# Test when p-value for refsnp is missing from file. 
+nopval_test = Test("--metal tests/data/missing_refsnp_pvalue_rs1531343.txt --refsnp rs1531343 --delim space --build hg18 --pop CEU --source hapmap");
+nopval_test.title = "Refsnp's p-value missing from metal file";
+nopval_test.add_required_file("tests/data/missing_refsnp_pvalue_rs1531343.txt");
+nopval_test.should_fail = True;
+tests.append(nopval_test);
+
+# Test when delimiter is specified as something other than what is in the file. 
+baddelim_test = Test("--metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --refsnp rs8050136 --delim tab --build hg18 --pop CEU --source hapmap");
+baddelim_test.title = "Delimiter misspecification test";
+baddelim_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+baddelim_test.should_fail = True;
+tests.append(baddelim_test);
+
+# Test when data file is empty. 
+empty_test = Test("--metal tests/data/empty_file --refsnp rs1002227 --build hg18 --pop CEU --source hapmap");
+empty_test.title = "Empty metal file test";
+empty_test.add_required_file("tests/data/empty_file");
+empty_test.should_fail = True;
+tests.append(empty_test);
+
+# Test when snpcol is non-standard, but --markercol specifies incorrectly. 
+snpcol_bad_test = Test("--metal tests/data/HDL_ONE_Eur_b36.tbl --refsnp rs10401969 --markercol blah --pvalcol GC.Pvalue --build hg18 --pop CEU --source hapmap");
+snpcol_bad_test.title = "--snpcol misspecification test";
+snpcol_bad_test.add_required_file("tests/data/HDL_ONE_Eur_b36.tbl");
+snpcol_bad_test.should_fail = True;
+tests.append(snpcol_bad_test);
+
+# Test when pvalcol is non-standard, but --pvalcol specifies incorrectly. 
+pvalcol_bad_test = Test("--metal tests/data/HDL_ONE_Eur_b36.tbl --refsnp rs10401969 --markercol SNPColumn --pvalcol blah --build hg18 --pop CEU --source hapmap");
+pvalcol_bad_test.title = "--pvalcol misspecification test";
+pvalcol_bad_test.add_required_file("tests/data/HDL_ONE_Eur_b36.tbl");
+pvalcol_bad_test.should_fail = True;
+tests.append(pvalcol_bad_test);
+
+# Test when hitspec is missing a SNP. 
+nosnp_hitspec_test = Test("--metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --hitspec tests/data/hitlist_missing_snp.txt --build hg18 --pop CEU --source hapmap");
+nosnp_hitspec_test.title = "Hitspec missing SNP test";
+nosnp_hitspec_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+nosnp_hitspec_test.add_required_file("tests/data/hitlist_missing_snp.txt");
+nosnp_hitspec_test.should_fail = True;
+tests.append(nosnp_hitspec_test);
+
+# Test when hitspec has a malformed SNP. 
+badsnp_hitspec_test = Test("--metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --hitspec tests/data/hitlist_bad_snp.txt --build hg18 --pop CEU --source hapmap");
+badsnp_hitspec_test.title = "Hitspec containing a bad SNP in first column";
+badsnp_hitspec_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+badsnp_hitspec_test.add_required_file("tests/data/hitlist_bad_snp.txt"); 
+badsnp_hitspec_test.should_fail = True;
+tests.append(badsnp_hitspec_test); 
+
+# Test what happens when metal file has windows line terminators. 
+winline_test = Test("--metal tests/data/windows_line_term_rs1531343.txt --refsnp rs1531343 --delim space --prefix winline --build hg18 --pop CEU --source hapmap");
+winline_test.title = "Windows line terminator test"
+winline_test.add_required_file("tests/data/windows_line_term_rs1531343.txt");
+tests.append(winline_test);
+
+# **** Testing command line argument handling. 
+
+# Test when chr/start are specified, but not end. 
+noend_test = Test("--metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --chr 12 --start 64200000 --delim space --build hg18 --pop CEU --source hapmap");
+noend_test.title = "Specifying chr/start, but no end"
+noend_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+noend_test.should_fail = True;
+tests.append(noend_test);
+
+# Variation on above test - start specified, no end. 
+nostart_test = Test("--metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --chr 12 --end 64800000 --delim space --build hg18 --pop CEU --source hapmap");
+nostart_test.title = "Specifying chr and end, but no start"
+nostart_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+nostart_test.should_fail = True;
+tests.append(nostart_test);
+
+# Failing to specify chromosome
+nochr_test = Test("--metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --start 64200000 --end 64800000 --delim space --build hg18 --pop CEU --source hapmap");
+nochr_test.title = "Specifying start/end, but no chr"
+nochr_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+nochr_test.should_fail = True;
+tests.append(nochr_test);
+
+# Specifying flank, but flank is garbage
+badflank_test = Test("--metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --delim space --refsnp rs1531343 --flank blahhhh --build hg18 --pop CEU --source hapmap");
+badflank_test.title = "Flank is bad test";
+badflank_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+badflank_test.should_fail = True;
+tests.append(badflank_test);
+
+# User specifies an LD file to use, but file is missing. 
+missing_ld_test = Test("--metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --delim space --refsnp rs1531343 --ld file_that_does_not_exist --build hg18 --pop CEU --source hapmap");
+missing_ld_test.title = "Missing LD file test"
+missing_ld_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+missing_ld_test.should_fail = True;
+tests.append(missing_ld_test);
+
+# User defined LD file exists, but header is missing. 
+user_ld_noheader_test = Test("--prefix user_ld_noheader_test--build hg18 --pop CEU --source hapmap --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --delim space --refsnp rs7578326 --ld tests/data/bad_ld_noheader.txt --no-cleanup");
+user_ld_noheader_test.title = "User-defined LD file has no header";
+user_ld_noheader_test.should_fail = True;
+tests.append(user_ld_noheader_test);
+
+# User gives a refgene, but this gene does not exist in the database. 
+bad_refgene_test = Test("--prefix badrefgenetest --metal tests/data/HDL_ONE_Eur_b36_normcols.tbl --refgene BLARGHYARR --flank 100kb --no-cleanup --build hg18 --pop CEU --source hapmap");
+bad_refgene_test.title = "Testing when --refgene doesn't exist in database";
+bad_refgene_test.should_fail = True;
+tests.append(bad_refgene_test);
+
+# Invalid build is specified
+
+# Invalid population is specified
+
+# Specify flank as 0kb (should work.) 
+
+###
+# TESTS THAT SHOULD GENERATE A VALID PDF: 
+###
+
+# Try a metal file with p-values ranging from 0.1 to 1 (this could trip
+# an improper double -log10 transformation. 
+log_trans_test = Test("--prefix log_trans_test --metal tests/data/diagramv2_rs1531343_3MB_pval-point1to1.txt --refsnp rs1531343 --flank 100kb --no-cleanup --pvalcol P.value --build hg18 --pop CEU --source hapmap");
+log_trans_test.title = "Testing file with p-values [0.1,1], transform on";
+log_trans_test.should_fail = False;
+tests.append(log_trans_test);
+
+# Same metal file as before, but now with transformation turned off. 
+log_trans_off_test = Test("--prefix log_trans_off_test --no-transform --metal tests/data/diagramv2_rs1531343_3MB_pval-point1to1.txt --refsnp rs1531343 --flank 100kb --no-cleanup --pvalcol P.value --build hg18 --pop CEU --source hapmap");
+log_trans_off_test.title = "Testing file with p-values [0.1,1], transform off";
+log_trans_off_test.should_fail = False;
+tests.append(log_trans_off_test);
+
+# Try with a metal file that has blank lines. 
+blanklines_test = Test("--prefix blanklines_test --metal tests/data/blanklines_diagramv2_rs1531343_3MB.txt --refsnp rs1531343 --flank 300kb --delim space --build hg18 --pop CEU --source hapmap");
+blanklines_test.title = "Testing metal file with blank lines";
+blanklines_test.add_required_file("tests/data/blanklines_diagramv2_rs1531343_3MB.txt");
+tests.append(blanklines_test);
+
+# Try using a gzipped file. 
+gzip_test = Test("--prefix gzip_test --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt.gz --delim space --refsnp rs1531343 --build hg18 --pop CEU --source hapmap");
+gzip_test.title = "Testing gzipped file";
+gzip_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt.gz");
+tests.append(gzip_test);
+
+# Test a metal file that has random line endings (\r\n, \r, \n.) 
+bad_lineends_test = Test("--prefix bad_lineends --metal tests/data/diagramv2_semeta_120108_bad_lineends.tbl --refsnp rs1531343 --flank 500kb --plotonly --build hg18 --pop CEU --source hapmap");
+bad_lineends_test.title = "Testing normal metal file with bad line endings"
+tests.append(bad_lineends_test);
+
+# Try using a gzipped with bad line endings. 
+gzip_badlineends_test = Test("--prefix gzip_badlineends --metal tests/data/diagramv2_badlineends_chr10_rs7903146_500kb.tbl --refsnp rs7903146 --flank 300kb --build hg18 --pop CEU --source hapmap");
+gzip_badlineends_test.title = "Testing gzipped file with bad line endings";
+gzip_badlineends_test.add_required_file("tests/data/diagramv2_badlineends_chr10_rs7903146_500kb.tbl");
+tests.append(gzip_badlineends_test);
+
+# Try using a bzip2 file. 
+bzip_test = Test("--prefix bzip_test --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt.bz2 --delim space --refsnp rs1531343 --build hg18 --pop CEU --source hapmap");
+bzip_test.title = "Testing bz2 file";
+bzip_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt.bz2");
+tests.append(bzip_test);
+
+# Arbitrary precision test. 
+arb_prec_test = Test("--no-cleanup --prefix arb_prec_test --metal tests/data/HDL_ONE_Eur_b36.tbl --refsnp rs3764261 --markercol SNPColumn --pvalcol GC.Pvalue --build hg18 --pop CEU --source hapmap");
+arb_prec_test.title = "Testing arbitrary precision for extremely small p-values"
+arb_prec_test.add_required_file("tests/data/HDL_ONE_Eur_b36.tbl");
+tests.append(arb_prec_test); 
+
+# Find SNP automatically, with potential arb precision problems. 
+cetp_auto_test = Test("--prefix cetp_auto_test --metal tests/data/HDL_ONE_Eur_b36.tbl --refgene CETP --markercol SNPColumn --pvalcol GC.Pvalue --build hg18 --pop CEU --source hapmap");
+cetp_auto_test.title = "Testing auto-detection of extremely small p-value"
+cetp_auto_test.add_required_file("tests/data/HDL_ONE_Eur_b36.tbl");
+tests.append(cetp_auto_test); 
+
+# Try using different populations for generating LD. 
+jpt_test = Test("--prefix JPT_test --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --delim space --refgene TCF7L2 --build hg18 --source hapmap --pop JPT+CHB");
+jpt_test.title = "Testing JPT+CHB LD info";
+tests.append(jpt_test);
+
+#  hg17_jpt_test = Test("--prefix hg17_JPT_test --build hg17 --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --delim space --refgene TCF7L2 --pop JPT+CHB");
+#  hg17_jpt_test.title = "Testing hg17 JPT+CHB LD info";
+#  tests.append(hg17_jpt_test);
+
+yri_test = Test("--prefix YRI_test --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --delim space --refgene TCF7L2 --build hg18 --source hapmap --pop YRI");
+yri_test.title = "Testing YRI LD info";
+tests.append(yri_test);  
+
+#  hg17_yri_test = Test("--prefix hg17_YRI_test --build hg17 --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --delim space --refgene TCF7L2 --pop YRI");
+#  hg17_yri_test.title = "Testing hg17 YRI LD info";
+#  tests.append(hg17_yri_test);
+
+ceu_test = Test("--prefix CEU_test --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --delim space --refgene TCF7L2 --build hg18 --source hapmap --pop CEU");
+ceu_test.title = "Testing CEU LD info";
+tests.append(ceu_test);
+
+#  hg17_ceu_test = Test("--prefix hg17_CEU_test --build hg17 --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --delim space --refgene TCF7L2 --pop CEU");
+#  hg17_ceu_test.title = "Testing hg17 CEU LD info";
+#  tests.append(hg17_ceu_test);
+
+chrx_ceu_test = Test("--prefix CEU_test --metal tests/data/diagram+_chrx-meta_090809_nall_b36_v1.tbl --refsnp rs5945326 --build hg18 --source hapmap --pop CEU");
+chrx_ceu_test.title = "Testing CEU LD on chrX";
+tests.append(chrx_ceu_test);
+
+#  chrx_hg17_ceu_test = Test("--prefix hg17_CEU_test --build hg17 --metal /home/welchr/projects/diagram+_chrx/meta/2009-09-08/diagram+_chrx-meta_090809_nall_b36_v1.tbl --refsnp rs5945326 --pop CEU");
+#  chrx_hg17_ceu_test.title = "Testing hg17 CEU on chrX";
+#  tests.append(chrx_hg17_ceu_test);
+
+dprime_ceu_test = Test("--prefix dprime_CEU_test --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --delim space --refgene TCF7L2 --build hg18 --source hapmap --pop CEU ldCol=dprime");
+dprime_ceu_test.title = "Testing CEU LD with dprime";
+tests.append(dprime_ceu_test);
+
+g1k_june2010_ceu_test = Test("--prefix 1000G_June2010_CEU_hg18_test --metal tests/data/Lipids1kG_METAANALYSIS_HDL_FDC_GC1_hg18.tbl --refgene LIPC --source 1000G_June2010 --build hg18 --pop CEU");
+g1k_june2010_ceu_test.title = "Testing 1000G June2010 CEU hg18";
+tests.append(g1k_june2010_ceu_test);
+
+g1k_june2010_yri_test = Test("--prefix 1000G_June2010_YRI_hg18_test --metal tests/data/Lipids1kG_METAANALYSIS_HDL_FDC_GC1_hg18.tbl --refgene LIPC --source 1000G_June2010 --build hg18 --pop YRI");
+g1k_june2010_yri_test.title = "Testing 1000G June2010 YRI hg18";
+tests.append(g1k_june2010_yri_test);
+
+g1k_june2010_jptchb_test = Test("--prefix 1000G_June2010_JPTCHB_hg18_test --metal tests/data/Lipids1kG_METAANALYSIS_HDL_FDC_GC1_hg18.tbl --refgene LIPC --build hg18 --source 1000G_June2010 --pop JPT+CHB");
+g1k_june2010_jptchb_test.title = "Testing 1000G June2010 JPT+CHB hg18";
+tests.append(g1k_june2010_jptchb_test);
+
+# Testing what happens when a 1000G SNP is used with hapmap LD. This might fail..
+g1k_hapmap_test = Test("--prefix 1000G_hapmap-CEU_hg18_test --metal tests/data/Lipids1kG_METAANALYSIS_HDL_FDC_GC1_hg18.tbl --refsnp chr15:56497991 --build hg18 --source hapmap --pop CEU");
+g1k_hapmap_test.title = "Testing a 1000G refSNP with hapmap LD, large region";
+tests.append(g1k_hapmap_test);
+
+# Same test as above, but smaller region that might trip a "pre-computed" lookup.
+g1k_precomp_hapmap_test = Test("--prefix 1000G_hapmap-CEU_hg18_test --metal tests/data/Lipids1kG_METAANALYSIS_HDL_FDC_GC1_hg18.tbl --refsnp chr15:56497991 --flank 100kb --build hg18 --source hapmap --pop CEU");
+g1k_precomp_hapmap_test.title = "Testing a 1000G refSNP with hapmap LD, small region";
+tests.append(g1k_precomp_hapmap_test);
+
+# Test user-defined LD file.
+user_ld_test = Test("--prefix user_ld_test --build hg18 --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --delim space --refsnp rs7578326 --ld tests/data/templd_rs7578326_and_rs1002227.txt --no-cleanup");
+user_ld_test.title = "Testing user-defined LD file";
+tests.append(user_ld_test);
+
+# Try plotting a region on X. 
+chrx_region_test = Test("--prefix chrx_region --build hg18 --pop CEU --source hapmap --metal tests/data/diagram+_chrx-meta_090809_nall_b36_v1.tbl --chr X --start 152000000 --end 153000000");
+chrx_region_test.title = "Testing region specifying for chr X";
+chrx_region_test.add_required_file("tests/data/diagram+_chrx-meta_090809_nall_b36_v1.tbl");
+tests.append(chrx_region_test); 
+
+# Try plotting a SNP on X. 
+chrx_snp_test = Test("--prefix chrx_snp --build hg18 --source hapmap --pop CEU --metal tests/data/diagram+_chrx-meta_090809_nall_b36_v1.tbl --refsnp rs5945326");
+chrx_snp_test.title = "Testing DIAGRAM SNP on chrX";
+tests.append(chrx_snp_test);
+
+# Try using a gene hitspec file. 
+t2d_genehits_test = Test("--prefix t2d_genehits --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --hitspec tests/data/diagramv2_gene_hitlist.txt --delim space --build hg18 --pop CEU --source hapmap");
+t2d_genehits_test.title = "Testing hitspec file with only genes";
+t2d_genehits_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+t2d_genehits_test.add_required_file("tests/data/diagramv2_gene_hitlist.txt");
+tests.append(t2d_genehits_test);
+
+# Try using a hitspec that has only chr/start/stop in it. 
+t2d_chrpos_hitspec = Test("--prefix t2d_chrposhitspec --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --hitspec tests/data/diagram_chrposonly_hitspec.txt --delim space --build hg18 --pop CEU --source hapmap");
+t2d_chrpos_hitspec.title = "Testing hitspec file with only chr/start/stop";
+t2d_chrpos_hitspec.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+t2d_chrpos_hitspec.add_required_file("tests/data/diagram_chrposonly_hitspec.txt");
+tests.append(t2d_chrpos_hitspec);
+
+# Test when hitspec has a bad line endings (either mixed up endings, multiple different endings, etc.)
+badlineends_hitspec_test = Test("--prefix badlineends_hitspec --delim space --plotonly --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --hitspec tests/data/hitlist_badlineends.txt --build hg18 --pop CEU --source hapmapt");
+badlineends_hitspec_test.title = "Hitspec containing multiple line endings";
+badlineends_hitspec_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+badlineends_hitspec_test.add_required_file("tests/data/hitlist_badlineends.txt"); 
+tests.append(badlineends_hitspec_test); 
+
+# Test when hitspec has blank lines. 
+blanklines_hitspec_test = Test("--prefix blanklines_hitspec --delim space --plotonly --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --hitspec tests/data/hitlist_blanklines.txt --build hg18 --pop CEU --source hapmap");
+blanklines_hitspec_test.title = "Hitspec containing blank lines";
+blanklines_hitspec_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+blanklines_hitspec_test.add_required_file("tests/data/hitlist_blanklines.txt"); 
+tests.append(blanklines_hitspec_test); 
+
+# Every possible legal hitspec combination. 
+t2d_hitspec_allcombos_test = Test("--prefix t2d_hitspec_allcombos_test --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --hitspec tests/data/hitlist_every_combo.txt --delim space --build hg18 --pop CEU --source hapmap");
+t2d_hitspec_allcombos_test.title = "Testing hitspec file with every possible combo of LEGAL entries";
+t2d_hitspec_allcombos_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+t2d_hitspec_allcombos_test.add_required_file("tests/data/hitlist_every_combo.txt");
+tests.append(t2d_hitspec_allcombos_test);
+
+# Every possible illegal hitspec combination. 
+t2d_hitspec_badcombos_test = Test("--prefix t2d_hitspec_badcombos_test --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --hitspec tests/data/hitlist_every_bad_combo.txt --delim space --build hg18 --pop CEU --source hapmap");
+t2d_hitspec_badcombos_test.title = "Testing hitspec file with every possible combo of BAD entries";
+t2d_hitspec_badcombos_test.add_required_file("tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt");
+t2d_hitspec_badcombos_test.add_required_file("tests/data/hitlist_every_bad_combo.txt");
+tests.append(t2d_hitspec_badcombos_test);
+
+# Try tests where we flip SNPs from rsID to chr:pos format. 
+allchrpos_rsid = Test("--prefix allchrpos_rsid --metal tests/data/diagramv2_SEmeta_120108_chrpos_b36_v1.tbl --refsnp rs1531343 --flank 550kb --no-cleanup --build hg18 --pop CEU --source hapmap");
+allchrpos_rsid.title = "Region specified with rsIDs (see next plot!)";
+tests.append(allchrpos_rsid);
+
+allchrpos_chrpos = Test("--prefix allchrpos_chrpos --metal tests/data/diagramv2_SEmeta_120108_chrposONLY_b36_v1.tbl --refsnp rs1531343 --flank 550kb --no-cleanup --build hg18 --pop CEU --source hapmap");
+allchrpos_chrpos.title = "Region specified with only chr:pos (compare to previous)";
+tests.append(allchrpos_chrpos);
+
+# hg19 LD tests
+hg19_1000g_eur = Test("--prefix hg19_1000g_eur --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --refgene TCF7L2 --plotonly --delim space --source 1000G_Nov2014 --pop EUR --build hg19");
+hg19_1000g_eur.title = "hg19 / 1000G_Nov2014 / EUR";
+tests.append(hg19_1000g_eur);
+
+hg19_1000g_afr = Test("--prefix hg19_1000g_afr --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --refgene TCF7L2 --plotonly --delim space --source 1000G_Nov2014 --pop AFR --build hg19");
+hg19_1000g_afr.title = "hg19 / 1000G_Nov2014 / AFR";
+tests.append(hg19_1000g_afr);
+
+hg19_1000g_asn = Test("--prefix hg19_1000g_asn --metal tests/data/DIAGRAMv2_EU_112808_nall_results_formetal.txt --refgene TCF7L2 --plotonly --delim space --source 1000G_Nov2014 --pop ASN --build hg19");
+hg19_1000g_asn.title = "hg19 / 1000G_Nov2014 / ASN";
+tests.append(hg19_1000g_asn);
+
+# March 2012 1000G tests - TCF7L2 - DIAGRAMv4 data
+tests.append(Test(
+ "--prefix 1000g_mar2012_EUR_hg19_TCF7L2 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region1.txt --refsnp chr10:114758349 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+ title = "1000G_March2012 / EUR / hg19 / TCF7L2"
+));
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_AFR_hg19_TCF7L2 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region1.txt --refsnp chr10:114758349 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop AFR --build hg19 showAnnot=F",
+ title = "1000G_March2012 / AFR / hg19 / TCF7L2"
+));
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_ASN_hg19_TCF7L2 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region1.txt --refsnp chr10:114758349 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop ASN --build hg19 showAnnot=F",
+ title = "1000G_March2012 / ASN / hg19 / TCF7L2"
+));
+
+tests.append(Test(
+ "--prefix 1000g_Nov2014_EUR_hg19_TCF7L2 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region1.txt --refsnp chr10:114758349 --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+ title = "1000G_Nov2014 / EUR / hg19 / TCF7L2"
+));
+
+tests.append(Test(
+ "--prefix 1000g_Nov2014_AFR_hg19_TCF7L2 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region1.txt --refsnp chr10:114758349 --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop AFR --build hg19 showAnnot=F",
+ title = "1000G_Nov2014 / AFR / hg19 / TCF7L2"
+));
+
+tests.append(Test(
+ "--prefix 1000g_Nov2014_ASN_hg19_TCF7L2 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region1.txt --refsnp chr10:114758349 --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop ASN --build hg19 showAnnot=F",
+ title = "1000G_Nov2014 / ASN / hg19 / TCF7L2"
+));
+
+# March 2012 1000G tests - CDKAL1 - DIAGRAMv4 data
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_EUR_hg19_CDKAL1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region2.txt --refsnp chr6:20973533 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+ title = "1000G_March2012 / EUR / hg19 / CDKAL1"
+));
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_AFR_hg19_CDKAL1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region2.txt --refsnp chr6:20973533 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop AFR --build hg19 showAnnot=F",
+ title = "1000G_March2012 / AFR / hg19 / CDKAL1"
+));
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_ASN_hg19_CDKAL1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region2.txt --refsnp chr6:20973533 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop ASN --build hg19 showAnnot=F",
+ title = "1000G_March2012 / ASN / hg19 / CDKAL1"
+));
+
+tests.append(Test(
+ "--prefix 1000g_Nov2014_EUR_hg19_CDKAL1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region2.txt --refsnp chr6:20973533 --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+ title = "1000G_Nov2014 / EUR / hg19 / CDKAL1"
+));
+
+tests.append(Test(
+ "--prefix 1000g_Nov2014_AFR_hg19_CDKAL1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region2.txt --refsnp chr6:20973533 --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop AFR --build hg19 showAnnot=F",
+ title = "1000G_Nov2014 / AFR / hg19 / CDKAL1"
+));
+
+tests.append(Test(
+ "--prefix 1000g_Nov2014_ASN_hg19_CDKAL1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region2.txt --refsnp chr6:20973533 --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop ASN --build hg19 showAnnot=F",
+ title = "1000G_Nov2014 / ASN / hg19 / CDKAL1"
+));
+
+# March 2012 1000G tests - HHEX - DIAGRAMv4 data
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_EUR_hg19_HHEX --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region3.txt --refgene HHEX --flank 250kb   --source 1000G_March2012 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+ title = "1000G_March2012 / EUR / hg19 / HHEX"
+));
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_AFR_hg19_HHEX --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region3.txt --refgene HHEX --flank 250kb   --source 1000G_March2012 --no-cleanup --pop AFR --build hg19 showAnnot=F",
+ title = "1000G_March2012 / AFR / hg19 / HHEX"
+));
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_ASN_hg19_HHEX --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region3.txt --refgene HHEX --flank 250kb   --source 1000G_March2012 --no-cleanup --pop ASN --build hg19 showAnnot=F",
+ title = "1000G_March2012 / ASN / hg19 / HHEX"
+));
+
+tests.append(Test(
+ "--prefix 1000g_Nov2014_EUR_hg19_HHEX --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region3.txt --refgene HHEX --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+ title = "1000G_Nov2014 / EUR / hg19 / HHEX"
+));
+
+tests.append(Test(
+ "--prefix 1000g_Nov2014_AFR_hg19_HHEX --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region3.txt --refgene HHEX --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop AFR --build hg19 showAnnot=F",
+ title = "1000G_Nov2014 / AFR / hg19 / HHEX"
+));
+
+tests.append(Test(
+ "--prefix 1000g_Nov2014_ASN_hg19_HHEX --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region3.txt --refgene HHEX --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop ASN --build hg19 showAnnot=F",
+ title = "1000G_Nov2014 / ASN / hg19 / HHEX"
+));
+
+# March 2012 1000G tests - KCNQ1 - DIAGRAMv4 data
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_EUR_hg19_KCNQ1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region4.txt --refgene KCNQ1 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+ title = "1000G_March2012 / EUR / hg19 / KCNQ1"
+));
+ 
+tests.append(Test(
+"--prefix 1000g_mar2012_AFR_hg19_KCNQ1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region4.txt --refgene KCNQ1 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop AFR --build hg19 showAnnot=F",
+title = "1000G_March2012 / AFR / hg19 / KCNQ1"
+));
+
+tests.append(Test(
+"--prefix 1000g_mar2012_ASN_hg19_KCNQ1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region4.txt --refgene KCNQ1 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop ASN --build hg19 showAnnot=F",
+title = "1000G_March2012 / ASN / hg19 / KCNQ1"
+));
+
+tests.append(Test(
+"--prefix 1000g_Nov2014_EUR_hg19_KCNQ1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region4.txt --refgene KCNQ1 --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+title = "1000G_Nov2014 / EUR / hg19 / KCNQ1"
+));
+
+tests.append(Test(
+"--prefix 1000g_Nov2014_AFR_hg19_KCNQ1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region4.txt --refgene KCNQ1 --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop AFR --build hg19 showAnnot=F",
+title = "1000G_Nov2014 / AFR / hg19 / KCNQ1"
+));
+
+tests.append(Test(
+"--prefix 1000g_Nov2014_ASN_hg19_KCNQ1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region4.txt --refgene KCNQ1 --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop ASN --build hg19 showAnnot=F",
+title = "1000G_Nov2014 / ASN / hg19 / KCNQ1"
+));
+
+# --ld-vcf tests
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_ALL_hg19_TCF7L2 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region1.txt --refsnp chr10:114758349 --flank 250kb --no-cleanup --pop EUR --build hg19 --ld-vcf /net/1000g/1000g/release/20110521/ALL.chr10.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf.gz showAnnot=F",
+ title = "1000G_March2012 / ALL / hg19 / TCF7L2 (from VCF)"
+));
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_ALL_hg19_CDKAL1 --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region2.txt --refsnp chr6:20973533 --flank 250kb --no-cleanup --build hg19 --ld-vcf /net/1000g/1000g/release/20110521/ALL.chr6.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf.gz showAnnot=F",
+ title = "1000G_March2012 / ALL / hg19 / CDKAL1 (from VCF)"
+));
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_ALL_hg19_HHEX --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region3.txt --refgene HHEX --flank 250kb --no-cleanup --pop EUR --build hg19 --ld-vcf /net/1000g/1000g/release/20110521/ALL.chr10.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf.gz showAnnot=F",
+ title = "1000G_March2012 / ALL / hg19 / HHEX (from VCF)"
+));
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_ALL_hg19_KCNQ1_vcftest --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region4.txt --refgene KCNQ1 --flank 250kb --no-cleanup --pop EUR --build hg19 --ld-vcf /net/1000g/1000g/release/20110521/ALL.chr11.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf.gz showAnnot=F",
+ title = "1000G_March2012 / ALL / hg19 / KCNQ1 (from VCF)"
+));
+
+tests.append(Test(
+ "--prefix 1000g_mar2012_ALL_hg19_KCNQ1_vcftest --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region4.txt --refgene KCNQ1 --flank 250kb --no-cleanup --pop EUR --build hg19 --ld-vcf /net/1000g/1000g/release/20110521/ALL.chr11.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf.gz --ld-measure dprime showAnnot=F",
+ title = "1000G_March2012 / ALL / hg19 / KCNQ1 / DPRIME (from VCF)"
+));
+
+# comparing --ld-vcf with PLINK
+
+tests.append(Test(
+ "--no-cleanup --prefix epacts_GOT2D_ldvcf_chr3 --epacts tests/data/T2D.single.score.ds.sv137.OM.gpc1.2.sex.before.after.epacts.gz --refsnp chr3:123051019 --build hg19 --ld-vcf tests/data/GoT2D.chr3.final_integrated_snps_indels_sv_beagle_thunder_20121121.vcf.gz showAnnot=F",
+ title = "EPACTS / GOT2D / LD-VCF"
+));
+
+tests.append(Test(
+ "--no-cleanup --prefix epacts_GOT2D_ldplink_chr3 --epacts tests/data/T2D.single.score.ds.sv137.OM.gpc1.2.sex.before.after.epacts.gz --refsnp chr3:123051019 --build hg19 --pop EUR --source 1000G_March2012 showAnnot=F",
+ title = "EPACTS / GOT2D / LD-PLINK (should look similar to prev)"
+));
+
+tests.append(Test(
+ "--no-cleanup --prefix epacts_GOT2D_ldvcf_chr10 --epacts tests/data/T2D.single.score.ds.sv137.OM.gpc1.2.sex.before.after.epacts.gz --refsnp chr10:114754784 --build hg19 --ld-vcf tests/data/GoT2D.chr10.final_integrated_snps_indels_sv_beagle_thunder_20121121.vcf.gz showAnnot=F",
+ title = "EPACTS / GOT2D / LD-VCF"
+));
+
+tests.append(Test(
+ "--no-cleanup --prefix epacts_GOT2D_ldplink_chr10 --epacts tests/data/T2D.single.score.ds.sv137.OM.gpc1.2.sex.before.after.epacts.gz --refsnp chr10:114754784 --build hg19 --pop EUR --source 1000G_March2012 showAnnot=F",
+ title = "EPACTS / GOT2D / LD-PLINK (should look similar to prev)"
+));
+
+tests.append(Test(
+ "--no-cleanup --prefix epacts_GOT2D_ldvcf_chr12 --epacts tests/data/T2D.single.score.ds.sv137.OM.gpc1.2.sex.before.after.epacts.gz --refsnp chr12:4384844 --build hg19 --ld-vcf tests/data/GoT2D.chr12.final_integrated_snps_indels_sv_beagle_thunder_20121121.vcf.gz showAnnot=F",
+ title = "EPACTS / GOT2D / LD-VCF"
+));
+
+tests.append(Test(
+ "--no-cleanup --prefix epacts_GOT2D_ldplink_chr12 --epacts tests/data/T2D.single.score.ds.sv137.OM.gpc1.2.sex.before.after.epacts.gz --refsnp chr12:4384844 --build hg19 --pop EUR --source 1000G_March2012 showAnnot=F",
+ title = "EPACTS / GOT2D / LD-PLINK (should look similar to prev)"
+));
+
+tests.append(Test(
+ "--no-cleanup --prefix epacts_GOT2D_ldvcf_chr2 --epacts tests/data/T2D.single.score.ds.sv137.OM.gpc1.2.sex.before.after.epacts.gz --refsnp chr2:42408681 --build hg19 --ld-vcf tests/data/GoT2D.chr2.final_integrated_snps_indels_sv_beagle_thunder_20121121.vcf.gz showAnnot=F",
+ title = "EPACTS / GOT2D / LD-VCF"
+));
+
+tests.append(Test(
+ "--no-cleanup --prefix epacts_GOT2D_ldplink_chr2 --epacts tests/data/T2D.single.score.ds.sv137.OM.gpc1.2.sex.before.after.epacts.gz --refsnp chr2:42408681 --build hg19 --pop EUR --source 1000G_March2012 showAnnot=F",
+ title = "EPACTS / GOT2D / LD-PLINK (should look similar to prev)"
+));
+
+# T2DGENES P1 data - KCNQ1 - 1000G March 2012
+
+tests.append(Test(
+"--prefix t2dgp1_1000g_mar2012_EUR_hg19_KCNQ1 --delim whitespace --markercol SNP --pvalcol P --metal tests/data/t2dgenes_p1/locuszoom.KCNQ1.out --refgene KCNQ1 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+title = "T2DG-P1 1000G_March2012 / EUR / hg19 / KCNQ1"
+));
+
+tests.append(Test(
+"--prefix t2dgp1_1000g_mar2012_AMR_hg19_KCNQ1 --delim whitespace --markercol SNP --pvalcol P --metal tests/data/t2dgenes_p1/locuszoom.KCNQ1.out --refgene KCNQ1 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop AMR --build hg19 showAnnot=F",
+title = "T2DG-P1 1000G_March2012 / AMR / hg19 / KCNQ1"
+));
+
+tests.append(Test(
+"--prefix t2dgp1_1000g_mar2012_AFR_hg19_KCNQ1 --delim whitespace --markercol SNP --pvalcol P --metal tests/data/t2dgenes_p1/locuszoom.KCNQ1.out --refgene KCNQ1 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop AFR --build hg19 showAnnot=F",
+title = "T2DG-P1 1000G_March2012 / AFR / hg19 / KCNQ1"
+));
+
+tests.append(Test(
+"--prefix t2dgp1_1000g_mar2012_ASN_hg19_KCNQ1 --delim whitespace --markercol SNP --pvalcol P --metal tests/data/t2dgenes_p1/locuszoom.KCNQ1.out --refgene KCNQ1 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop ASN --build hg19 showAnnot=F",
+title = "T2DG-P1 1000G_March2012 / ASN / hg19 / KCNQ1"
+));
+
+# T2DGENES P1 data - TCF7L2 - 1000G March 2012
+
+tests.append(Test(
+"--prefix t2dgp1_1000g_mar2012_EUR_hg19_TCF7L2 --delim whitespace --markercol SNP --pvalcol P --metal tests/data/t2dgenes_p1/locuszoom.TCF7L2.out --refgene TCF7L2 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+title = "T2DG-P1 1000G_March2012 / EUR / hg19 / TCF7L2"
+));
+
+tests.append(Test(
+"--prefix t2dgp1_1000g_mar2012_AMR_hg19_TCF7L2 --delim whitespace --markercol SNP --pvalcol P --metal tests/data/t2dgenes_p1/locuszoom.TCF7L2.out --refgene TCF7L2 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop AMR --build hg19 showAnnot=F",
+title = "T2DG-P1 1000G_March2012 / AMR / hg19 / TCF7L2"
+));
+
+tests.append(Test(
+"--prefix t2dgp1_1000g_mar2012_AFR_hg19_TCF7L2 --delim whitespace --markercol SNP --pvalcol P --metal tests/data/t2dgenes_p1/locuszoom.TCF7L2.out --refgene TCF7L2 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop AFR --build hg19 showAnnot=F",
+title = "T2DG-P1 1000G_March2012 / AFR / hg19 / TCF7L2"
+));
+
+tests.append(Test(
+"--prefix t2dgp1_1000g_mar2012_ASN_hg19_TCF7L2 --delim whitespace --markercol SNP --pvalcol P --metal tests/data/t2dgenes_p1/locuszoom.TCF7L2.out --refgene TCF7L2 --flank 250kb   --source 1000G_March2012 --no-cleanup --pop ASN --build hg19 showAnnot=F",
+title = "T2DG-P1 1000G_March2012 / ASN / hg19 / TCF7L2"
+));
+
+# EPACTS result file tests
+tests.append(Test(
+ "--prefix epacts_GOT2D --epacts tests/data/T2D.single.score.ds.sv137.OM.gpc1.2.sex.before.after.epacts.gz --refsnp chr14:106332131 --ld-vcf tests/data/GoT2D.chr14.final_integrated_snps_indels_sv_beagle_thunder_20121121.vcf.gz showAnnot=F",
+ title = "EPACTS / GOT2D / LD-VCF"
+));
+
+tests.append(Test(
+ "--prefix epacts_GOT2D --epacts tests/data/T2D.single.score.ds.sv137.OM.gpc1.2.sex.before.after.epacts.gz --refsnp chr14:106332131 --build hg19 --pop EUR --source 1000G_March2012 showAnnot=F",
+ title = "EPACTS / GOT2D / LD-PLINK (should look similar to prev)"
+));
+
+# GWAS catalog tests
+tests.append(Test(
+"--prefix 1000g_Nov2014_EUR_hg19_KCNQ1_gwascat --gwas-cat whole-cat_significant-only --markercol SNPID --pvalcol PVAL --metal tests/data/DIAGRAMv4_iSNPs_FUSION_1000G_MAR12_WLD_121012_PK_noindels_chrpos_tabdelim_test-region4.txt --refgene KCNQ1 --flank 250kb   --source 1000G_Nov2014 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+title = "NHGRI GWAS / hg19 / KCNQ1"
+));
+
+# Test denote markers
+tests.append(Test(
+"--prefix denote_marker_test --metal tests/data/BMI_meta_analysis.tbl.gz --refsnp rs6567160 --flank 250kb --build hg18 --source 1000G_June2010 --pop CEU refsnpLineColor='black' --denote-markers-file tests/data/test_marker_denote"
+));
+
+# Test cases for plotting LD with additional ref SNPs. 
+tests.append(Test(
+"--prefix addrefsnptest1 --metal tests/data/BMI_meta_analysis.tbl.gz --refsnp rs6567160 --add-refsnps 'rs17066842,rs9944545' --flank 250kb --build hg18 --source 1000G_June2010 --pop CEU refsnpLineColor='black'"
+));
+
+tests.append(Test(
+"--prefix addrefsnptest2 --metal tests/data/BMI_meta_analysis.tbl.gz --refsnp rs6567160 --conditional 'rs17066842,rs9944545' --flank 250kb --build hg18 --source 1000G_June2010 --pop CEU refsnpLineColor='black'"
+,title="Same as previous, just with --conditional not --add-refsnps"));
+
+# Tests for ld_cache (plot a region multiple times)
+tests.append(Test(
+"--prefix ldcache1 --cache ../../ld_cache_tests.db --metal tests/data/BMI_meta_analysis.tbl.gz --refsnp rs6567160 --flank 250kb --build hg18 --source 1000G_June2010 --pop CEU refsnpLineColor='black'",
+title="Fresh LD cache"
+));
+
+tests.append(Test(
+"--prefix ldcache2 --cache ../../ld_cache_tests.db --metal tests/data/BMI_meta_analysis.tbl.gz --refsnp rs6567160 --flank 250kb --build hg18 --source 1000G_June2010 --pop CEU refsnpLineColor='black'",
+title="Using LD cache from previous run",
+delay=30)
+);
+
+tests.append(Test(
+"--prefix ldcache3 --cache ../../ld_cache_tests.db --metal tests/data/BMI_meta_analysis.tbl.gz --refsnp rs6567160 --flank 250kb --build hg18 --source 1000G_June2010 --pop CEU refsnpLineColor='black'",
+title="Using LD cache from previous run",
+delay=60)
+);
+
+# Tests for plotting BED tracks
+tests.append(Test(
+"--prefix bed_test1 --metal tests/data/DIAGRAMv2_EU_112808_n17K_results_formetal_prettycolors.txt --refsnp rs7903146 --flank 250kb --build hg19 --source 1000G_March2012 --pop EUR refsnpLineColor='black' rightMarginLines=10 --bed-tracks tests/data/HuPanIs_12_dense_statenames.bed",
+title = "BED track test"
+));
+
+# Test for changing SNP colors from within metal file
+tests.append(Test(
+"--prefix color_test --metal tests/data/DIAGRAMv2_EU_112808_n17K_results_formetal_prettycolors.txt --refsnp rs7903146 --flank 250kb --build hg19 --source 1000G_March2012 --pop EUR refsnpLineColor='black' rightMarginLines=10 --bed-tracks tests/data/HuPanIs_12_dense_statenames.bed colorCol=pretty",
+title = "Testing changing colors of SNPs (colorCol set in file)"
+));
+
+# Test showing isoforms and requiredGene should not cause a crash (even though it can't get the correct gene name with isoforms enabled)
+tests.append(Test(
+"--prefix isoform_test --epacts tests/data/T2D.single.score.ds.sv137.OM.gpc1.2.sex.before.after.epacts.gz --refgene TCF7L2 --flank 100kb --build hg19 --source 1000G_March2012 --pop EUR showIso=T",
+title = "Testing showing isoforms and requiredGene should not cause crash"
+));
+
+# Make sure custom user annotations work 
+tests.append(Test(
+"--prefix custom_annot_test --metal tests/data/test_annot_col.txt --refgene TCF7L2 --build hg19 --pop EUR --source 1000G_March2012 --markercol SNPID --pvalcol PVAL annotCol=annotation annotPch=15,16,17,18,19 annotOrder=stop,non_syn,intron,syn",
+title = "Testing custom user annotations"
+));
+
+# Add test for using gencode gene table
+tests.append(Test(
+"--prefix gencode_test --metal tests/data/test_annot_col.txt --gene-table gencode --refgene TCF7L2 --build hg19 --pop EUR --source 1000G_March2012 --markercol SNPID --pvalcol PVAL annotCol=annotation annotPch=15,16,17,18,19 annotOrder=stop,non_syn,intron,syn",
+title = "Testing GENCODE genes instead of refFlat"
+));
+
+# Add test for tabix index
+tests.append(Test(
+"--epacts tests/data/got2d_exome_chip_multiassoc_studyage-1_BMI-1_smokefix-1_dropstatin-1_dropt2d-1.epacts.gz --refgene FADS1 --epacts-pval-col MUFA.P --epacts-beg-col BEG --prefix test_tabix --no-cleanup --build hg19 --pop EUR --source 1000G_March2012",
+title = "Testing EPACTS file with tabix index"
+));
+
+# Test for annotation column in EPACTS file
+tests.append(Test(
+"--prefix epacts_annot_test --epacts tests/data/test_epacts_with_annot_col.epacts.gz --refgene TCF7L2 --build hg19 --pop EUR --source 1000G_March2012 annotCol=ANNOT annotPch=15,16,17,18,19,4,5,7,1",
+title = "Testing custom user annotations with an EPACTS file"
+));
+
+# Test for new title format that allows for italics and other plotmath annotation
+tests.append(Test(
+"--prefix title_expr_test --epacts tests/data/test_epacts_with_annot_col.epacts.gz --refgene TCF7L2 --build hg19 --pop EUR --source 1000G_March2012 annotCol=ANNOT annotPch=15,16,17,18,19,4,5,7,1",
+title="Testing complicated title expressions",
+plot_expr_title="\"paste('New title format ',italic(TCF7L2),~ phantom() - phantom(' '),'rs7903146')\""
+));
+
+# Test for specifying required gene as isoform
+tests.append(Test(
+"--prefix new_req_gene_test --epacts tests/data/test_epacts_with_annot_col.epacts.gz --refsnp rs7903146 --gene-table gencode --build hg19 --pop EUR --source 1000G_March2012 requiredGene=ENST00000349937 hiRequiredGene=T annotCol=ANNOT annotPch=15,16,17,18,19,4,5,7,1 showIso=T",
+title="Highlight isoform ENST00000349937"
+));
+
+# Test for specifying required gene as gene
+tests.append(Test(
+"--prefix new_req_gene_test2 --epacts tests/data/test_epacts_with_annot_col.epacts.gz --refsnp rs7903146 --gene-table gencode --build hg19 --pop EUR --source 1000G_March2012 requiredGene=TCF7L2 hiRequiredGene=T annotCol=ANNOT annotPch=15,16,17,18,19,4,5,7,1",
+title="Highlight gene TCF7L2"
+));
+
+# Test for specifying multiple required genes
+tests.append(Test(
+"--prefix new_req_gene_test3 --epacts tests/data/test_epacts_with_annot_col.epacts.gz --refsnp rs7903146 --flank 1MB --gene-table gencode --build hg19 --pop EUR --source 1000G_March2012 requiredGene=TCF7L2,CASP7 hiRequiredGene=T annotCol=ANNOT annotPch=15,16,17,18,19,4,5,7,1",
+title="Highlight gene TCF7L2 and CASP7"
+));
+
+tests.append(Test(
+"--prefix test_all_weights_equal --metal tests/data/test_weights_in_region_all_equal.tab --chr 10 --start 91498515 --end 92502028 --source 1000G_Nov2014 --build hg19 --pop EUR --prefix weight_bug_all_same --pvalcol P --markercol Variant weightCol=Sample",
+title="Weights are all equal - still should be points"
+))
+
+# hg38 tests
+# This dataset is entirely rsID, should be translated to hg38 coordinates automatically
+tests.append(Test(
+"--prefix hg38_magic_fglu_rsidtest --gwas-cat whole-cat_significant-only --metal tests/data/MAGIC_FastingGlucose_2011.txt --pvalcol P.value --refsnp rs780093 --flank 250kb --source 1000G_Nov2014 --no-cleanup --pop EUR --build hg38 showAnnot=F",
+title = "hg38 MAGIC 2011 FGlu"
+));
+
+tests.append(Test(
+"--prefix hg19_magic_fglu_rsidtest --gwas-cat whole-cat_significant-only --metal tests/data/MAGIC_FastingGlucose_2011.txt --pvalcol P.value --refsnp rs780093 --flank 250kb --source 1000G_Nov2014 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+title = "Same as previous plot but hg19 coordinates"
+));
+
+# Refsnp without chr
+tests.append(Test(
+"--prefix refsnp_no_chr --gwas-cat whole-cat_significant-only --metal tests/data/MAGIC_FastingGlucose_2011.txt --pvalcol P.value --refsnp 2:27742603 --flank 250kb --source 1000G_Nov2014 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+title = "Try plotting with refsnp without 'chr'"
+));
+
+# Refsnp is epacts format
+tests.append(Test(
+"--prefix refsnp_is_epacts --gwas-cat whole-cat_significant-only --metal tests/data/MAGIC_FastingGlucose_2011.txt --pvalcol P.value --refsnp 2:27742603_A/G --flank 250kb --source 1000G_Nov2014 --no-cleanup --pop EUR --build hg19 showAnnot=F",
+title = "Try plotting with refsnp in EPACTS format"
+));
