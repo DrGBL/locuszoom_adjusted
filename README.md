@@ -5,7 +5,9 @@ Original locuszoom code can be obtained from this repository: https://github.com
 
 *** Instructions ***
 
-Use the following code to build the new locuszoom reference. In this case I use hg38. Once that's done you can use the locuszoom function in the bin folder.
+Use the following code to build the new locuszoom reference, as was done for the plots in https://www.medrxiv.org/content/10.1101/2023.06.26.23291885v1
+
+. In this case I use hg38. Once that's done you can use the locuszoom function in the bin folder.
 
 ```
 cd /path/to/your/directory/
