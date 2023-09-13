@@ -23,7 +23,7 @@ wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/refFlat.txt.gz
 gzip -d refFlat.txt.gz
 printf "geneName\tname\tchrom\tstrand\ttxStart\ttxEnd\tcdsStart\tcdsEnd\texonCount\texonStarts\texonEnds\n" > refFlat_header.txt
 cat ${pathOut}refFlat_header.txt ${pathOut}refFlat.txt > ${pathOut}refFlat_new.txt
-awk 'FNR==NR {a[$1]; next} $1 in a' protein_coding_genes.tsv refFlat_new.txt | cat refFlat_header.txt - > refFlat_protein_coding.txt
+awk 'FNR==NR {a[$2]; next} $1 in a' protein_coding_genes.tsv refFlat_new.txt | cat refFlat_header.txt - > refFlat_protein_coding.txt
 
 wget http://csg.sph.umich.edu/locuszoom/download/recomb-hg38.tar.gz
 tar -xzvf ${pathOut}recomb-hg38.tar.gz
