@@ -40,9 +40,11 @@ sed 's|^chr||g' recomb-hg38/genetic_map_GRCh38_merged.tab | \
 rm recomb-hg38/genetic_map_GRCh38_merged.tab
 mv recomb-hg38/genetic_map_GRCh38_merged.mod.tab recomb-hg38/genetic_map_GRCh38_merged.tab
 
-dbmeister.py --db bangladesh.db --snp_pos my_snp_pos_file.txt 
-dbmeister.py --db bangladesh.db --trans refsnp_trans.txt
-dbmeister.py --db bangladesh.db --refflat refFlat_protein_coding.txt
-dbmeister.py --db bangladesh.db --recomb_rate recomb-hg38/genetic_map_GRCh38_merged.tab
+dbmeister.py --db name_of_your_database.db --snp_pos my_snp_pos_file.txt 
+dbmeister.py --db name_of_your_database.db --trans refsnp_trans.txt
+dbmeister.py --db name_of_your_database.db --refflat refFlat_protein_coding.txt
+dbmeister.py --db name_of_your_database.db --recomb_rate recomb-hg38/genetic_map_GRCh38_merged.tab
 
 ```
+
+After this you can run locuszoom normally using the new .db file. Please refer to the original locus zoom git and the wiki it links to for full instructions.
